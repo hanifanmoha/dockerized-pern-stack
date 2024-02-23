@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+
+  db_postgre:
+    image: postgres
+    restart: no
+    environment:
+      POSTGRES_PASSWORD: secret
+    ports:
+      - 5432:5432
+    volumes:
+      - ./database_postgre/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  adminer:
+    image: adminer
+    restart: no
+    ports:
+      - 3002:8080
+
+  backend_express:
+    build:
+      context: ./backend_express
+      dockerfile: Dockerfile
+    restart: no
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db_postgre
+    environment:
+      - DB_HOST=db_postgre
+      - DB_PORT=5432
+      - DB_NAME=pern
+      - DB_USER=postgres
+      - DB_PASSWORD=secret
+
+  frontend_react:
+    build:
+      context: ./frontend_react
+      dockerfile: Dockerfile
+      args:
+        - VITE_BACKEND_URL=http://localhost:3001
+    restart: no
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend_express
+
+volumes:
+  postgres_data:

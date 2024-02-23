@@ -1,0 +1,13 @@
+Command:
+- docker-compose up --build
+
+Access:
+- UI : localhost:3000
+- API : localhost:3001
+- Adminer : localhost:3002
+
+Access DB From Adminer:
+- Username : postgres
+- Password : secret
+- Host : host.docker.internal
+- Port : 5432
